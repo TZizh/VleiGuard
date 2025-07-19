@@ -2,7 +2,7 @@ import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import LandingPage from "./Components/LandingPage";
 import RestorationHub from "./Components/RestorationHub";
-import SponsorDashboard from "./Components/SponsorDashboard";
+import SponsorDashboard from "./Components/SponsorDashBoard";
 import CommunityWall from "./Components/CommunityWall";
 import ResearchHub from "./Components/ResearchHub";
 import ExplorePage from "./Components/ExplorePage";
