@@ -2,8 +2,9 @@ import React, { useState, useEffect } from "react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
-import VleiFooter from "./VleiFooter";
+import { Leaf, LeafyGreen } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
+import VleiFooter from "./VleiFooter";
 
 // Fix for marker icons (Vite/CRA)
 delete L.Icon.Default.prototype._getIconUrl;
@@ -13,7 +14,58 @@ L.Icon.Default.mergeOptions({
   shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
 });
 
-// Demo data with lat/lngs
+// --- Lucide Leaf Overlay ---
+function LucideLeafPatternOverlay({ className = "" }) {
+  const pattern = [
+    { icon: Leaf, top: "3%", left: "7%", size: 42, rotate: "-14deg", opacity: 0.13 },
+    { icon: LeafyGreen, top: "7%", left: "22%", size: 54, rotate: "19deg", opacity: 0.14 },
+    { icon: Leaf, top: "5%", left: "36%", size: 38, rotate: "-9deg", opacity: 0.12 },
+    { icon: LeafyGreen, top: "9%", left: "61%", size: 51, rotate: "7deg", opacity: 0.13 },
+    { icon: Leaf, top: "8%", left: "83%", size: 47, rotate: "-18deg", opacity: 0.14 },
+    { icon: LeafyGreen, top: "16%", left: "15%", size: 42, rotate: "11deg", opacity: 0.13 },
+    { icon: Leaf, top: "19%", left: "32%", size: 60, rotate: "18deg", opacity: 0.15 },
+    { icon: LeafyGreen, top: "22%", left: "60%", size: 56, rotate: "14deg", opacity: 0.13 },
+    { icon: Leaf, top: "24%", left: "82%", size: 36, rotate: "7deg", opacity: 0.13 },
+    { icon: Leaf, top: "32%", left: "10%", size: 54, rotate: "-5deg", opacity: 0.14 },
+    { icon: LeafyGreen, top: "37%", left: "26%", size: 38, rotate: "11deg", opacity: 0.13 },
+    { icon: Leaf, top: "48%", left: "30%", size: 64, rotate: "8deg", opacity: 0.13 },
+    { icon: LeafyGreen, top: "43%", left: "50%", size: 46, rotate: "-10deg", opacity: 0.12 },
+    { icon: Leaf, top: "38%", left: "76%", size: 48, rotate: "-15deg", opacity: 0.13 },
+    { icon: LeafyGreen, top: "60%", left: "55%", size: 52, rotate: "22deg", opacity: 0.11 },
+    { icon: Leaf, top: "56%", left: "69%", size: 45, rotate: "-12deg", opacity: 0.13 },
+    { icon: LeafyGreen, top: "65%", left: "25%", size: 38, rotate: "18deg", opacity: 0.14 },
+    { icon: Leaf, top: "63%", left: "80%", size: 54, rotate: "-17deg", opacity: 0.12 },
+    { icon: LeafyGreen, top: "70%", left: "80%", size: 44, rotate: "-10deg", opacity: 0.12 },
+    { icon: Leaf, top: "73%", left: "58%", size: 36, rotate: "14deg", opacity: 0.13 },
+    { icon: LeafyGreen, top: "80%", left: "18%", size: 48, rotate: "-19deg", opacity: 0.14 },
+    { icon: Leaf, top: "82%", left: "35%", size: 42, rotate: "8deg", opacity: 0.14 },
+    { icon: LeafyGreen, top: "91%", left: "72%", size: 56, rotate: "16deg", opacity: 0.13 },
+    { icon: Leaf, top: "93%", left: "6%", size: 50, rotate: "-17deg", opacity: 0.13 },
+  ];
+  return (
+    <div className={`pointer-events-none absolute inset-0 w-full h-full select-none z-0 ${className}`}>
+      {pattern.map((item, idx) => {
+        const Icon = item.icon;
+        return (
+          <Icon
+            key={idx}
+            size={item.size}
+            style={{
+              position: "absolute",
+              top: item.top,
+              left: item.left,
+              opacity: item.opacity,
+              transform: `rotate(${item.rotate})`,
+              color: "#79b93c",
+            }}
+          />
+        );
+      })}
+    </div>
+  );
+}
+
+// --- Demo Data ---
 const wetlandsDemo = [
   {
     id: 1,
@@ -62,7 +114,6 @@ const wetlandsDemo = [
   },
 ];
 
-// Demo community wall comments (could be API-powered)
 const communityComments = [
   {
     id: 1,
@@ -90,7 +141,6 @@ const communityComments = [
 export default function RestorationHub() {
   const [selected, setSelected] = useState(wetlandsDemo[0]);
   const [activeComment, setActiveComment] = useState(0);
-  const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
 
   // Simple auto-rotate for community card (change every 7s)
@@ -102,102 +152,54 @@ export default function RestorationHub() {
   }, []);
 
   return (
-    <div
-      className="min-h-screen w-full flex flex-col"
-      style={{
-        background: "url('/Vlei_guarg_hero_bg.png') center center/cover no-repeat",
-        position: "relative",
-      }}
-    >
-      {/* Soft dark overlay */}
-      <div className="absolute inset-0 bg-black/30 backdrop-blur-sm z-0"></div>
+    <div className="min-h-screen rounded-3xl mb-5 relative bg-gradient-to-b from-[#ebfbd1] via-[#fffde4] to-[#c8ec7e] pb-20 font-sans overflow-x-hidden">
+      {/* Leaf overlay */}
+      <LucideLeafPatternOverlay />
 
-      {/* Floating Glass NavBar with Hamburger */}
-      <div className="fixed top-0 left-0 w-full flex justify-center z-20">
-        <div className="mt-2 mx-2 max-w-6xl w-full rounded-xl bg-white/90 px-4 py-3 shadow-md border border-green-100 backdrop-blur-md flex items-center justify-between relative">
-          <Link to="/" className="flex items-center gap-2">
-            <img src="/vleiguard_logo_no_bg.png" alt="VleiGuard" className="w-9 h-9 rounded" />
-            <span className="font-bold text-xl text-[#234445]">VleiGuard</span>
-          </Link>
-          {/* Hamburger Button (Mobile Only) */}
-          <button
-            className="md:hidden flex items-center p-2 ml-2 rounded-lg hover:bg-[#e7f1ec] focus:outline-none"
-            aria-label="Open menu"
-            onClick={() => setMenuOpen(open => !open)}
-          >
-            <svg className="w-7 h-7 text-[#234445]" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-              {menuOpen ? (
-                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-              ) : (
-                <path strokeLinecap="round" strokeLinejoin="round" d="M4 8h16M4 16h16" />
-              )}
-            </svg>
-          </button>
-          {/* Nav Links - Desktop */}
-          <nav className="hidden md:flex gap-6 text-[#234445] font-medium text-base">
-            <Link to="/explore" className="hover:text-green-700">Explore</Link>
-            <Link to="/restoration-hub" className="hover:text-green-700 font-bold">Restoration Hub</Link>
-            <Link to="/reports" className="hover:text-green-700">Reports</Link>
-            <Link to="/community" className="hover:text-green-700">Community</Link>
-          </nav>
-          {/* Nav Links - Mobile Dropdown */}
-          {menuOpen && (
-            <div className="absolute top-16 left-0 right-0 w-full bg-white/95 rounded-xl shadow-lg px-6 py-4 flex flex-col gap-3 z-50 md:hidden">
-              <Link to="/explore" className="hover:text-green-700 w-full text-center py-2" onClick={() => setMenuOpen(false)}>Explore</Link>
-              <Link to="/restoration-hub" className="hover:text-green-700 font-bold w-full text-center py-2" onClick={() => setMenuOpen(false)}>Restoration Hub</Link>
-              <Link to="/reports" className="hover:text-green-700 w-full text-center py-2" onClick={() => setMenuOpen(false)}>Reports</Link>
-              <Link to="/community" className="hover:text-green-700 w-full text-center py-2" onClick={() => setMenuOpen(false)}>Community</Link>
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* Main Content */}
-      <div className="relative z-10 flex-1 flex flex-col items-center justify-start pt-24 pb-8 px-2 w-full">
+      <div className="relative z-10">
         {/* Hero/Heading + Map */}
-        <section className="w-full max-w-6xl mx-auto mb-6 md:mb-10">
-          <div className="flex flex-col md:flex-row gap-8 items-center">
-            <div className="flex-1 text-center md:text-left">
-              <h1 className="text-3xl md:text-5xl font-extrabold text-white mb-3 drop-shadow-lg">Restoration Hub</h1>
-              <p className="text-base md:text-lg mb-2 text-[#e7ffe7] font-medium drop-shadow-sm">
-                Track progress, adopt a wetland, and join Zimbabwe’s restoration movement.<br />
-                Each zone below is a story in progress—click to explore or get involved!
-              </p>
-              <div className="mt-5">
-                <Link
-                  to="/"
-                  className="text-[#e7ffe7] hover:underline text-sm font-semibold"
-                >
-                  ← Back to VleiGuard Home
-                </Link>
-              </div>
+        <section className="w-full bg-[#234445] rounded-t-3xl px-4 py-12 md:py-14 mb-8 flex flex-col md:flex-row gap-10 items-center">
+          <div className="flex-1 text-center md:text-left">
+            <h1 className="text-3xl md:text-5xl font-extrabold text-white mb-3 drop-shadow-lg">
+              Restoration Hub
+            </h1>
+            <p className="text-base md:text-lg mb-2 text-[#e7ffe7] font-medium drop-shadow-sm">
+              Track progress, adopt a wetland, and join Zimbabwe’s restoration movement.<br />
+              Each zone below is a story in progress—click to explore or get involved!
+            </p>
+            <div className="mt-5">
+              <Link
+                to="/"
+                className="text-[#e7ffe7] hover:underline text-sm font-semibold"
+              >
+                ← Back to VleiGuard Home
+              </Link>
             </div>
-            {/* Interactive Map */}
-            <div className="flex-1 flex justify-center w-full">
-              <div className="w-full max-w-xs md:max-w-md h-52 md:h-60 rounded-2xl shadow-xl border-4 border-white overflow-hidden bg-white/40">
-                <MapContainer
-                  center={[-17.85, 31.05]}
-                  zoom={9}
-                  scrollWheelZoom={true}
-                  style={{ width: "100%", height: "100%" }}
-                >
-                  <TileLayer
-                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                    attribution='&copy; OpenStreetMap contributors'
-                  />
-                  {wetlandsDemo.map(w => (
-                    <Marker key={w.id} position={[w.lat, w.lng]}>
-                      <Popup>
-                        <span className="font-bold">{w.name}</span>
-                        <br />
-                        {w.location}
-                        <br />
-                        Status: <span className="font-semibold">{w.status}</span>
-                      </Popup>
-                    </Marker>
-                  ))}
-                </MapContainer>
-              </div>
+          </div>
+          <div className="flex-1 flex justify-center w-full">
+            <div className="w-full max-w-xs md:max-w-md h-52 md:h-60 rounded-2xl shadow-xl border-4 border-white overflow-hidden bg-white/40">
+              <MapContainer
+                center={[-17.85, 31.05]}
+                zoom={9}
+                scrollWheelZoom={true}
+                style={{ width: "100%", height: "100%" }}
+              >
+                <TileLayer
+                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                  attribution='&copy; OpenStreetMap contributors'
+                />
+                {wetlandsDemo.map(w => (
+                  <Marker key={w.id} position={[w.lat, w.lng]}>
+                    <Popup>
+                      <span className="font-bold">{w.name}</span>
+                      <br />
+                      {w.location}
+                      <br />
+                      Status: <span className="font-semibold">{w.status}</span>
+                    </Popup>
+                  </Marker>
+                ))}
+              </MapContainer>
             </div>
           </div>
         </section>
@@ -207,9 +209,7 @@ export default function RestorationHub() {
           {wetlandsDemo.map((w) => (
             <div
               key={w.id}
-              className={`
-                bg-white/95 rounded-2xl shadow-lg p-4 cursor-pointer border-2 transition-all
-                flex flex-col hover:scale-[1.025] min-h-[310px]
+              className={`bg-white/95 rounded-2xl shadow-lg p-4 cursor-pointer border-2 transition-all flex flex-col hover:scale-[1.025] min-h-[310px]
                 ${selected.id === w.id
                   ? "border-[#5B8FB9] ring-2 ring-[#5B8FB9] shadow-xl"
                   : "border-transparent hover:border-[#8BC34A]"}
@@ -225,8 +225,7 @@ export default function RestorationHub() {
               <div className="flex flex-wrap items-center gap-2 text-xs md:text-sm mb-1">
                 <span className="bg-[#e7f1ec] rounded px-2 py-1">{w.location}</span>
                 <span
-                  className={`
-                    rounded px-2 py-1
+                  className={`rounded px-2 py-1
                     ${w.status === "Restoring"
                       ? "bg-[#8BC34A]/90 text-white"
                       : w.status === "Adoptable"
@@ -241,8 +240,7 @@ export default function RestorationHub() {
               <div className="mb-2 text-xs text-[#234445]/60">Size: {w.hectares} ha</div>
               <div className="h-2 w-full rounded bg-[#e7f1ec] mb-3 overflow-hidden">
                 <div
-                  className={`
-                    h-2 rounded transition-all
+                  className={`h-2 rounded transition-all
                     ${w.progress > 70
                       ? "bg-gradient-to-r from-[#5B8FB9] via-[#8BC34A] to-[#d6ffd6]"
                       : "bg-[#8BC34A]"}
@@ -275,7 +273,6 @@ export default function RestorationHub() {
         {/* Community Wall / Reports Section */}
         <section className="w-full max-w-4xl mx-auto mb-12">
           <div className="rounded-3xl bg-white/90 shadow-xl border border-green-50 px-6 py-7 flex flex-col md:flex-row gap-7 items-center relative">
-            {/* Big quote icon for style */}
             <div className="absolute left-6 top-4 text-green-200 text-4xl select-none hidden md:block">“</div>
             <div className="flex-1 flex flex-col items-center md:items-start">
               <div className="text-[#234445] font-semibold text-lg md:text-xl mb-2">Community Wall</div>
@@ -309,8 +306,7 @@ export default function RestorationHub() {
                 <div className="mb-2 text-[#5B8FB9] font-semibold">{selected.location}</div>
                 <div className="mb-4">
                   <span
-                    className={`
-                      rounded px-2 py-1 text-xs mr-2
+                    className={`rounded px-2 py-1 text-xs mr-2
                       ${selected.status === "Restoring"
                         ? "bg-[#8BC34A]/90 text-white"
                         : selected.status === "Adoptable"
@@ -353,8 +349,7 @@ export default function RestorationHub() {
         </section>
       </div>
 
-      {/* Footer always at the bottom */}
-      <VleiFooter />
+      
     </div>
   );
 }

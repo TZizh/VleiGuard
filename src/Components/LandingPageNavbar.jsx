@@ -24,7 +24,7 @@ export default function VleiNavbar() {
     <nav className="fixed top-4 left-0 w-full z-50 flex justify-center pointer-events-none">
       <div className="pointer-events-auto bg-white/80 backdrop-blur-lg shadow-lg border border-green-200 rounded-2xl flex items-center justify-between px-4 md:px-8 py-2 md:py-3 max-w-5xl w-[96%] mx-auto">
         {/* Logo & Title */}
-        <Link to="/" className="flex items-center gap-2 group">
+        <Link to="/landing-page" className="flex items-center gap-2 group">
           <img
             src="/vleiguard_logo_no_bg.png"
             alt="VleiGuard Logo"
@@ -37,10 +37,10 @@ export default function VleiNavbar() {
 
         {/* Desktop Links */}
         <div className="hidden md:flex gap-2 md:gap-6">
-          <Link to="/signup" className={navLink("/signup", true)}>
+          <Link to="/auth" className={navLink("/signup", true)}>
             Sign-up
           </Link>
-          <Link to="/login" className={navLink("/login")}>
+          <Link to="/auth" className={navLink("/login")}>
             Login
           </Link>
         </div>

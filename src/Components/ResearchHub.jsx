@@ -1,11 +1,64 @@
-import React, { useState } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
+import { Leaf, LeafyGreen, BarChart2, Database, AlertTriangle, Wifi, FileDown, Users } from "lucide-react";
+
+// --- Leaf Overlay ---
+function LucideLeafPatternOverlay({ className = "" }) {
+  const pattern = [
+    { icon: Leaf, top: "3%", left: "7%", size: 42, rotate: "-14deg", opacity: 0.13 },
+    { icon: LeafyGreen, top: "7%", left: "22%", size: 54, rotate: "19deg", opacity: 0.14 },
+    { icon: Leaf, top: "5%", left: "36%", size: 38, rotate: "-9deg", opacity: 0.12 },
+    { icon: LeafyGreen, top: "9%", left: "61%", size: 51, rotate: "7deg", opacity: 0.13 },
+    { icon: Leaf, top: "8%", left: "83%", size: 47, rotate: "-18deg", opacity: 0.14 },
+    { icon: LeafyGreen, top: "16%", left: "15%", size: 42, rotate: "11deg", opacity: 0.13 },
+    { icon: Leaf, top: "19%", left: "32%", size: 60, rotate: "18deg", opacity: 0.15 },
+    { icon: LeafyGreen, top: "22%", left: "60%", size: 56, rotate: "14deg", opacity: 0.13 },
+    { icon: Leaf, top: "24%", left: "82%", size: 36, rotate: "7deg", opacity: 0.13 },
+    { icon: Leaf, top: "32%", left: "10%", size: 54, rotate: "-5deg", opacity: 0.14 },
+    { icon: LeafyGreen, top: "37%", left: "26%", size: 38, rotate: "11deg", opacity: 0.13 },
+    { icon: Leaf, top: "48%", left: "30%", size: 64, rotate: "8deg", opacity: 0.13 },
+    { icon: LeafyGreen, top: "43%", left: "50%", size: 46, rotate: "-10deg", opacity: 0.12 },
+    { icon: Leaf, top: "38%", left: "76%", size: 48, rotate: "-15deg", opacity: 0.13 },
+    { icon: LeafyGreen, top: "60%", left: "55%", size: 52, rotate: "22deg", opacity: 0.11 },
+    { icon: Leaf, top: "56%", left: "69%", size: 45, rotate: "-12deg", opacity: 0.13 },
+    { icon: LeafyGreen, top: "65%", left: "25%", size: 38, rotate: "18deg", opacity: 0.14 },
+    { icon: Leaf, top: "63%", left: "80%", size: 54, rotate: "-17deg", opacity: 0.12 },
+    { icon: LeafyGreen, top: "70%", left: "80%", size: 44, rotate: "-10deg", opacity: 0.12 },
+    { icon: Leaf, top: "73%", left: "58%", size: 36, rotate: "14deg", opacity: 0.13 },
+    { icon: LeafyGreen, top: "80%", left: "18%", size: 48, rotate: "-19deg", opacity: 0.14 },
+    { icon: Leaf, top: "82%", left: "35%", size: 42, rotate: "8deg", opacity: 0.14 },
+    { icon: LeafyGreen, top: "91%", left: "72%", size: 56, rotate: "16deg", opacity: 0.13 },
+    { icon: Leaf, top: "93%", left: "6%", size: 50, rotate: "-17deg", opacity: 0.13 },
+  ];
+  return (
+    <div className={`pointer-events-none absolute inset-0 w-full h-full select-none z-0 ${className}`}>
+      {pattern.map((item, idx) => {
+        const Icon = item.icon;
+        return (
+          <Icon
+            key={idx}
+            size={item.size}
+            style={{
+              position: "absolute",
+              top: item.top,
+              left: item.left,
+              opacity: item.opacity,
+              transform: `rotate(${item.rotate})`,
+              color: "#79b93c",
+            }}
+          />
+        );
+      })}
+    </div>
+  );
+}
 
 const sensorStats = [
-  { label: "Active Sensors", value: "12" },
-  { label: "Data Points Collected", value: "52,100+" },
-  { label: "Real-time Alerts Issued", value: "17" },
-  { label: "Open Datasets", value: "4" },
+  { label: "Active Sensors", value: "12", icon: <Wifi /> },
+  { label: "Data Points Collected", value: "52,100+", icon: <Database /> },
+  { label: "Real-time Alerts Issued", value: "17", icon: <AlertTriangle /> },
+  { label: "Open Datasets", value: "4", icon: <BarChart2 /> },
+  { label: "Unique Volunteers", value: "72", icon: <Users /> },
 ];
 
 const datasets = [
@@ -36,142 +89,109 @@ const datasets = [
 ];
 
 export default function ResearchHub() {
-  const [menuOpen, setMenuOpen] = useState(false);
-
   return (
-    <div className="font-serif min-h-screen bg-gradient-to-b from-[#ddf8b2] via-[#fffde4] to-[#617933] text-[#234445]">
-      {/* Floating Glass NavBar with Hamburger */}
-      <div className="fixed top-0 left-0 w-full flex justify-center z-20">
-        <div className="mt-2 mx-2 max-w-6xl w-full rounded-xl bg-white/90 px-4 py-3 shadow-md border border-green-100 backdrop-blur-md flex items-center justify-between relative">
-          <Link to="/" className="flex items-center gap-2">
-            <img src="/vleiguard_logo_no_bg.png" alt="VleiGuard" className="w-9 h-9 rounded" />
-            <span className="font-bold text-xl text-[#234445]">VleiGuard</span>
-          </Link>
-          {/* Hamburger Button (Mobile Only) */}
-          <button
-            className="sm:hidden flex items-center p-2 ml-2 rounded-lg hover:bg-[#e7f1ec] focus:outline-none"
-            aria-label="Open menu"
-            onClick={() => setMenuOpen(open => !open)}
-          >
-            <svg className="w-7 h-7 text-[#234445]" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-              {menuOpen ? (
-                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-              ) : (
-                <path strokeLinecap="round" strokeLinejoin="round" d="M4 8h16M4 16h16" />
-              )}
-            </svg>
-          </button>
-          {/* Nav Links - Desktop */}
-          <nav className="hidden sm:flex gap-6 text-[#234445] font-medium text-base">
-            <Link to="/explore" className="hover:text-green-700">Explore</Link>
-            <Link to="/restoration" className="hover:text-green-700">Restoration Hub</Link>
-            <Link to="/research-hub" className="hover:text-green-700 font-bold">Research Hub</Link>
-            <Link to="/reports" className="hover:text-green-700">Reports</Link>
-            <Link to="/community" className="hover:text-green-700">Community Wall</Link>
-            <Link to="/make-report" className="hover:bg-[#5B8FB9] hover:text-white px-4 py-1 rounded-lg bg-[#8BC34A] text-white font-semibold transition">Make a Report</Link>
-          </nav>
-          {/* Nav Links - Mobile Drawer */}
-          {menuOpen && (
-            <div className="absolute top-16 left-0 right-0 w-full bg-white/95 rounded-xl shadow-lg px-6 py-4 flex flex-col gap-3 z-50 sm:hidden">
-              <Link to="/explore" className="hover:text-green-700 w-full text-center py-2" onClick={() => setMenuOpen(false)}>Explore</Link>
-              <Link to="/restoration" className="hover:text-green-700 w-full text-center py-2" onClick={() => setMenuOpen(false)}>Restoration Hub</Link>
-              <Link to="/research-hub" className="hover:text-green-700 font-bold w-full text-center py-2" onClick={() => setMenuOpen(false)}>Research Hub</Link>
-              <Link to="/reports" className="hover:text-green-700 w-full text-center py-2" onClick={() => setMenuOpen(false)}>Reports</Link>
-              <Link to="/community" className="hover:text-green-700 w-full text-center py-2" onClick={() => setMenuOpen(false)}>Community Wall</Link>
-              <Link to="/make-report" className="hover:bg-[#5B8FB9] hover:text-white px-4 py-2 rounded-lg bg-[#8BC34A] text-white font-semibold transition w-full text-center" onClick={() => setMenuOpen(false)}>
-                Make a Report
-              </Link>
-            </div>
-          )}
-        </div>
-      </div>
+    <div className="min-h-screen rounded-3xl mb-5 relative bg-gradient-to-b from-[#ebfbd1] via-[#fffde4] to-[#c8ec7e] pb-20 font-sans overflow-x-hidden">
+      <LucideLeafPatternOverlay />
 
-      {/* Hero Section */}
-      <section className="w-full relative pt-28 pb-10 md:pt-32 md:pb-16 mb-8"
-        style={{
-          background: "url('/Vlei_guarg_hero_bg.png') center center/cover no-repeat",
-        }}
-      >
-        <div className="absolute inset-0 bg-black/30 backdrop-blur-sm rounded-b-3xl z-0"></div>
-        <div className="relative z-10 max-w-6xl mx-auto flex flex-col md:flex-row gap-8 items-center px-2">
-          <div className="flex-1 text-center md:text-left">
-            <h1 className="text-3xl md:text-5xl font-extrabold text-white mb-3 drop-shadow-lg">Research & Data Hub</h1>
-            <p className="text-base md:text-lg text-white/90 mb-4 font-medium drop-shadow-sm">
-              Explore VleiGuard’s open science mission: download real-world wetland datasets, see live stats from our IoT sensors, and help drive impact with data.
-            </p>
-            <div className="mt-6">
-              <Link
-                to="/"
-                className="text-[#e7ffe7] hover:underline text-sm font-semibold"
-              >
-                ← Back to VleiGuard Home
-              </Link>
-            </div>
-          </div>
-          <div className="flex-1 flex justify-center">
-            <img
-              src="/vleiguard_logo.jpg"
-              alt="Wetland Analytics"
-              className="rounded-2xl shadow-xl w-56 h-56 object-contain bg-white/80 p-4"
-            />
-          </div>
-        </div>
-      </section>
+      <div className="relative z-10 max-w-5xl mx-auto w-full px-3 pt-10 pb-16">
 
-      {/* Live Sensor Stats */}
-      <section className="max-w-6xl mx-auto py-10 ">
-        <h2 className="text-2xl font-bold mb-8 text-[#5B8FB9]">Live Sensor Network</h2>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-8">
-          {sensorStats.map((stat, idx) => (
-            <div key={idx} className="bg-white rounded-xl shadow p-6 text-center">
-              <div className="text-3xl font-bold mb-2 text-[#6AA77B]">{stat.value}</div>
-              <div className="text-xs text-[#234445]">{stat.label}</div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Downloadable Datasets */}
-      <section className="max-w-6xl mx-auto py-10">
-        <h2 className="text-2xl font-bold mb-8 text-[#6AA77B]">Download Open Datasets</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {datasets.map((d, idx) => (
-            <div key={idx} className="bg-white rounded-xl shadow p-6 flex flex-col justify-between">
-              <div>
-                <div className="font-semibold text-[#5B8FB9] mb-1">{d.name}</div>
-                <div className="text-sm mb-2">{d.desc}</div>
-                <div className="text-xs text-[#836953] mb-4">
-                  Last updated: {d.updated}
-                </div>
-              </div>
-              <a
-                href={d.download}
-                className="inline-block bg-[#6AA77B] text-white font-semibold px-6 py-2 rounded-xl shadow hover:bg-[#5B8FB9] transition text-sm text-center"
-                download
-              >
-                Download CSV
-              </a>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Data/API info */}
-      <section className="max-w-6xl mx-auto pb-20">
-        <div className="bg-[#e7f1ec] rounded-xl shadow-lg p-8">
-          <h3 className="text-xl font-bold mb-3 text-[#836953]">APIs & Research Collaboration</h3>
-          <p className="mb-4 text-base">
-            Want live access or want to publish a study? Our REST API (coming soon) and data sharing program supports citizen science and academic research. 
-            <br />
-            <span className="text-xs text-[#5B8FB9]">
-              (Contact us for beta access or custom data requests)
-            </span>
+        {/* Hero Section */}
+        <section className="w-full rounded-3xl bg-[#234445] px-6 py-10 mb-12 text-center shadow-lg">
+          <h1 className="text-3xl sm:text-4xl font-extrabold text-white mb-3 drop-shadow-lg">
+            Research & Data Hub
+          </h1>
+          <p className="text-base md:text-lg mb-2 text-[#e7ffe7] font-medium drop-shadow-sm">
+            Open science, real-time data, and a collaborative platform for Zimbabwe's wetlands.
+            Download datasets, view live stats, and contribute to real-world environmental impact.
           </p>
-          <button className="bg-[#836953] text-white px-6 py-2 rounded-xl shadow hover:bg-[#6AA77B] transition text-sm font-semibold">
-            Request API Access
-          </button>
-        </div>
-      </section>
+          <div className="flex flex-wrap gap-4 justify-center mt-7">
+            <Link to="/make-report"
+              className="bg-[#8BC34A] hover:bg-green-900 text-white font-bold rounded-xl px-7 py-3 shadow-lg transition text-lg"
+            >
+              Share Your Data / Report
+            </Link>
+            <Link to="/"
+              className="text-[#e7ffe7] hover:underline text-base font-semibold"
+            >
+              ← Back to Home
+            </Link>
+          </div>
+        </section>
+
+        {/* Live Sensor & Analytics Cards */}
+        <section className="w-full mb-12">
+          <h2 className="text-2xl font-bold mb-7 text-[#5B8FB9]">Live Sensor & Community Stats</h2>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
+            {sensorStats.map((stat, idx) => (
+              <div key={idx} className="bg-white/90 rounded-2xl shadow p-6 flex flex-col items-center gap-2">
+                <div className="text-3xl mb-2 text-[#8BC34A]">{stat.icon}</div>
+                <div className="text-2xl font-extrabold text-[#234445]">{stat.value}</div>
+                <div className="text-xs text-[#426a3d] font-semibold">{stat.label}</div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Analytics Highlights Section */}
+        <section className="w-full mb-12">
+          <h2 className="text-xl font-bold mb-5 text-[#234445]">Recent Insights</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="bg-white/90 rounded-xl shadow-lg p-6 flex flex-col justify-center">
+              <h3 className="text-lg font-semibold text-[#8BC34A] mb-2">Sensor Alert Trends</h3>
+              <div className="mb-2 text-[#234445]">14% more alerts issued this month (mostly water level rise).</div>
+              <div className="text-xs text-[#836953]">Trend: Increasing community response time.</div>
+            </div>
+            <div className="bg-white/90 rounded-xl shadow-lg p-6 flex flex-col justify-center">
+              <h3 className="text-lg font-semibold text-[#5B8FB9] mb-2">Top Data Contributors</h3>
+              <div className="mb-2 text-[#234445]">Eco-Club Harare, Upper Manyame Youth, and 3 solo guardians uploaded new observations this week.</div>
+              <div className="text-xs text-[#836953]">Keep your sensors connected for live points!</div>
+            </div>
+          </div>
+        </section>
+
+        {/* Downloadable Datasets */}
+        <section className="w-full mb-14">
+          <h2 className="text-2xl font-bold mb-8 text-[#6AA77B]">Download Open Datasets</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {datasets.map((d, idx) => (
+              <div key={idx} className="bg-white/95 rounded-xl shadow p-6 flex flex-col justify-between">
+                <div>
+                  <div className="font-semibold text-[#5B8FB9] mb-1">{d.name}</div>
+                  <div className="text-sm mb-2">{d.desc}</div>
+                  <div className="text-xs text-[#836953] mb-4">
+                    Last updated: {d.updated}
+                  </div>
+                </div>
+                <a
+                  href={d.download}
+                  className="inline-block bg-[#6AA77B] text-white font-semibold px-6 py-2 rounded-xl shadow hover:bg-[#5B8FB9] transition text-sm text-center"
+                  download
+                >
+                  <FileDown className="inline mr-2 mb-1" size={18} />
+                  Download CSV
+                </a>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Data/API info */}
+        <section className="w-full mb-10">
+          <div className="bg-[#e7f1ec] rounded-2xl shadow-lg p-8 text-center">
+            <h3 className="text-xl font-bold mb-3 text-[#836953]">APIs & Research Collaboration</h3>
+            <p className="mb-4 text-base">
+              Want to build your own dashboard or run data science experiments? Our REST API (coming soon) and data sharing program support citizen science and academic research.
+              <br />
+              <span className="text-xs text-[#5B8FB9]">
+                (Contact us for beta access or custom data requests)
+              </span>
+            </p>
+            <button className="bg-[#836953] text-white px-6 py-2 rounded-xl shadow hover:bg-[#8BC34A] transition text-sm font-semibold">
+              Request API Access
+            </button>
+          </div>
+        </section>
+      </div>
     </div>
   );
 }

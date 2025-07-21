@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Leaf, LeafyGreen, Camera } from "lucide-react";
 
 const wetlands = [
   "Mabvuku Wetland",
@@ -16,42 +17,88 @@ const threatTypes = [
   "Other",
 ];
 
+// Leafy overlay (dense pattern)
+function LucideLeafPatternOverlay({ className = "" }) {
+  const pattern = [
+    { icon: Leaf, top: "3%", left: "7%", size: 38, rotate: "-14deg", opacity: 0.13 },
+    { icon: LeafyGreen, top: "7%", left: "20%", size: 46, rotate: "19deg", opacity: 0.14 },
+    { icon: Leaf, top: "8%", left: "80%", size: 41, rotate: "-12deg", opacity: 0.11 },
+    { icon: LeafyGreen, top: "12%", left: "64%", size: 42, rotate: "11deg", opacity: 0.14 },
+    { icon: Leaf, top: "15%", left: "40%", size: 39, rotate: "8deg", opacity: 0.13 },
+    { icon: LeafyGreen, top: "38%", left: "25%", size: 36, rotate: "-9deg", opacity: 0.12 },
+    { icon: Leaf, top: "55%", left: "73%", size: 46, rotate: "-19deg", opacity: 0.14 },
+    { icon: LeafyGreen, top: "66%", left: "48%", size: 51, rotate: "14deg", opacity: 0.13 },
+    { icon: Leaf, top: "86%", left: "83%", size: 32, rotate: "4deg", opacity: 0.11 },
+    { icon: LeafyGreen, top: "93%", left: "6%", size: 38, rotate: "17deg", opacity: 0.13 },
+  ];
+  return (
+    <div className={`pointer-events-none absolute inset-0 w-full h-full select-none z-0 ${className}`}>
+      {pattern.map((item, idx) => {
+        const Icon = item.icon;
+        return (
+          <Icon
+            key={idx}
+            size={item.size}
+            style={{
+              position: "absolute",
+              top: item.top,
+              left: item.left,
+              opacity: item.opacity,
+              transform: `rotate(${item.rotate})`,
+              color: "#8BC34A",
+            }}
+          />
+        );
+      })}
+    </div>
+  );
+}
+
 export default function SubmitReport() {
   const [wetland, setWetland] = useState(wetlands[0]);
   const [threat, setThreat] = useState(threatTypes[0]);
   const [details, setDetails] = useState("");
   const [photo, setPhoto] = useState(null);
 
-  return (
-    <div
-      className="min-h-screen w-full flex flex-col items-center justify-start"
-      style={{
-        background: "url('/Vlei_guarg_hero_bg.png') center center/cover no-repeat",
-        position: "relative",
-      }}
-    >
-      {/* Glassy Floating NavBar */}
-      <div className="fixed top-0 left-0 w-full flex justify-center z-20">
-        <div className="mt-2 mx-2 max-w-4xl w-full flex flex-col sm:flex-row items-center rounded-xl bg-white/90 px-3 sm:px-6 py-2 sm:py-3 shadow-md border border-green-100 backdrop-blur-md gap-2 sm:gap-0">
-          <div className="flex items-center gap-2 flex-shrink-0 mb-1 sm:mb-0">
-            <img src="/vleiguard_logo_no_bg.png" alt="VleiGuard" className="w-8 h-8 sm:w-9 sm:h-9 rounded" />
-            <span className="font-bold text-lg sm:text-xl text-[#234445]">VleiGuard</span>
-          </div>
-          <nav className="ml-0 sm:ml-auto flex flex-wrap justify-center gap-5 text-[#234445] font-medium text-base">
-            <a href="/activities" className="hover:underline px-2">Activities</a>
-            <a href="#" className="hover:underline px-2">My Points</a>
-            <a href="#" className="hover:underline px-2">Explore</a>
-          </nav>
-        </div>
-      </div>
+  // For showing a preview
+  const [preview, setPreview] = useState(null);
+  function handlePhotoChange(e) {
+    const file = e.target.files[0];
+    setPhoto(file);
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = ev => setPreview(ev.target.result);
+      reader.readAsDataURL(file);
+    } else {
+      setPreview(null);
+    }
+  }
 
-      {/* Form Section */}
-      <div className="relative z-10 w-full flex flex-col items-center justify-center min-h-screen pt-24 sm:pt-32 px-2">
-        <h1 className="text-white text-2xl sm:text-4xl md:text-5xl font-extrabold mb-8 sm:mb-10 drop-shadow-lg text-center">
-          SUBMIT A REPORT
-        </h1>
+  return (
+    <div className="min-h-screen rounded-3xl mb-6 relative bg-gradient-to-b from-[#ebfbd1] via-[#fffde4] to-[#c8ec7e] pb-12 font-sans overflow-x-hidden">
+      <LucideLeafPatternOverlay />
+
+      {/* Main Content */}
+      <div className="relative z-10 flex flex-col items-center w-full min-h-screen">
+        {/* Header */}
+        <header className="w-full rounded-t-3xl bg-[#234445] pt-16 pb-10 px-2 text-center shadow-lg mb-5">
+          <img
+            src="/vleiguard_logo_no_bg.png"
+            alt="VleiGuard"
+            className="w-16 h-16 mx-auto rounded-2xl bg-white/80 shadow border mb-4"
+          />
+          <h1 className="font-extrabold text-3xl sm:text-4xl md:text-5xl text-white mb-2 tracking-tight drop-shadow">
+            Submit a Wetland Report
+          </h1>
+          <p className="text-white/80 text-base sm:text-lg font-medium max-w-xl mx-auto">
+            Help us protect Zimbabwe’s wetlands: quickly flag any threat or concern you see on the ground. 
+            <span className="hidden sm:inline"> Your actions help VleiGuard and the community respond faster!</span>
+          </p>
+        </header>
+
+        {/* Report Form */}
         <form
-          className="bg-white/95 rounded-2xl shadow-2xl p-4 sm:p-6 md:p-10 w-full max-w-xs sm:max-w-md md:max-w-xl flex flex-col gap-6 border border-green-100 backdrop-blur-lg"
+          className="relative z-10 bg-white/95 rounded-2xl shadow-2xl p-4 sm:p-6 md:p-10 w-full max-w-xs sm:max-w-md md:max-w-xl flex flex-col gap-6 border border-green-100 backdrop-blur-lg"
         >
           {/* Wetland Selector */}
           <div>
@@ -61,9 +108,9 @@ export default function SubmitReport() {
             <select
               className="w-full px-3 py-2 rounded-lg border border-[#e7f1ec] bg-white text-[#234445] font-medium focus:outline-green-300 text-sm sm:text-base"
               value={wetland}
-              onChange={(e) => setWetland(e.target.value)}
+              onChange={e => setWetland(e.target.value)}
             >
-              {wetlands.map((w) => (
+              {wetlands.map(w => (
                 <option key={w} value={w}>{w}</option>
               ))}
             </select>
@@ -77,9 +124,9 @@ export default function SubmitReport() {
             <select
               className="w-full px-3 py-2 rounded-lg border border-[#e7f1ec] bg-white text-[#234445] font-medium focus:outline-green-300 text-sm sm:text-base"
               value={threat}
-              onChange={(e) => setThreat(e.target.value)}
+              onChange={e => setThreat(e.target.value)}
             >
-              {threatTypes.map((t) => (
+              {threatTypes.map(t => (
                 <option key={t} value={t}>{t}</option>
               ))}
             </select>
@@ -88,29 +135,26 @@ export default function SubmitReport() {
           {/* Photo Upload */}
           <div>
             <label className="block font-semibold text-[#234445] mb-2 text-sm sm:text-base">
-              Photo
+              Photo <span className="text-[#8BC34A]">(optional)</span>
             </label>
             <label
               htmlFor="photo-upload"
               className="w-full border-2 border-dashed border-[#e7f1ec] bg-white/80 rounded-lg flex flex-col items-center justify-center px-2 sm:px-4 py-4 sm:py-6 cursor-pointer hover:bg-[#e7f1ec] transition"
             >
-              <svg
-                className="w-8 h-8 mb-2 text-[#5B8FB9]"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-              </svg>
+              {preview ? (
+                <img src={preview} alt="Preview" className="w-28 h-20 object-cover rounded-lg shadow mb-2" />
+              ) : (
+                <Camera className="w-8 h-8 mb-2 text-[#5B8FB9]" />
+              )}
               <span className="text-[#234445] font-medium text-xs sm:text-base">
-                {photo ? photo.name : "Upload file"}
+                {photo ? photo.name : "Upload a photo"}
               </span>
               <input
                 id="photo-upload"
                 type="file"
                 accept="image/*"
                 className="hidden"
-                onChange={e => setPhoto(e.target.files[0])}
+                onChange={handlePhotoChange}
               />
             </label>
           </div>
@@ -132,9 +176,9 @@ export default function SubmitReport() {
           {/* Submit Button */}
           <button
             type="submit"
-            className="bg-[#426a3d] hover:bg-[#234445] text-white text-base sm:text-lg font-bold px-6 py-3 rounded-xl mt-2 shadow transition"
+            className="bg-[#8BC34A] hover:bg-[#426a3d] text-white text-base sm:text-lg font-bold px-6 py-3 rounded-xl mt-2 shadow transition"
           >
-            SUBMIT REPORT
+            Submit Report
           </button>
         </form>
       </div>
